@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-const API_URL = import.meta.env.VITE_API_URL || "https://classroom-allocation-backend.onrender.com";;
+const API_BASE = import.meta.env.VITE_API_URL || "https://classroom-allocation-backend.onrender.com";
 
 function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -116,9 +116,9 @@ function App() {
     try {
       const prefDayString = selectedDays.join(", ");
       const unavailDayString = unavailDays.join(", ");
-      
-      await axios.post(`${API_BASE}/lecturers`, { 
-        name: lecName, 
+
+      await axios.post(`${API_BASE}/lecturers`, {
+        name: lecName,
         max_hours: 12,
         preferred_day: prefDayString,
         preferred_slot: lecPrefSlot,
@@ -196,7 +196,7 @@ function App() {
 
   const handleGenerate = async () => {
     setLoading(true);
-    setMessage(""); 
+    setMessage("");
     setErrorMessage("");
     setConflictData(null);
 
@@ -261,8 +261,8 @@ function App() {
           <span style={styles.metricValue}>{rooms.length}</span>
         </div>
         <div style={styles.metricCardHighlight}>
-          <span style={{...styles.metricLabel, color: '#93c5fd'}}>Scheduled Slots</span>
-          <span style={{...styles.metricValue, color: '#fff'}}>{timetable.length}</span>
+          <span style={{ ...styles.metricLabel, color: '#93c5fd' }}>Scheduled Slots</span>
+          <span style={{ ...styles.metricValue, color: '#fff' }}>{timetable.length}</span>
         </div>
       </div>
 
@@ -273,13 +273,13 @@ function App() {
       {conflictData && (
         <div style={styles.diagnosticCard}>
           <div style={styles.diagnosticHeader}>
-            <span style={{fontSize: '20px'}}>🚨</span>
+            <span style={{ fontSize: '20px' }}>🚨</span>
             <h3 style={styles.diagnosticTitle}>
               Solver Failure: {conflictData.type || "Constraint Infeasibility"}
             </h3>
           </div>
           <p style={styles.diagnosticMsg}>{conflictData.message}</p>
-          
+
           {conflictData.details && (
             <div style={styles.diagnosticDetailsBox}>
               <strong>Details / Bottleneck Entities:</strong>
@@ -313,8 +313,8 @@ function App() {
       {activeTab === "dashboard" && (
         <div>
           <div style={styles.heroBox}>
-            <h2 style={{margin: '0 0 10px 0'}}>Schedule Classes Here</h2>
-            <p style={{margin: '0 0 20px 0', color: '#475569'}}>
+            <h2 style={{ margin: '0 0 10px 0' }}>Schedule Classes Here</h2>
+            <p style={{ margin: '0 0 20px 0', color: '#475569' }}>
               Click to evaluate level quotas, room capacities, and teacher preferences.
             </p>
             <button onClick={handleGenerate} disabled={loading} style={loading ? styles.btnDisabled : styles.generateBtn}>
@@ -322,10 +322,10 @@ function App() {
             </button>
           </div>
 
-          <h2 style={{marginTop: '30px', color: '#1e293b'}}>Generated Department Timetable</h2>
+          <h2 style={{ marginTop: '30px', color: '#1e293b' }}>Generated Department Timetable</h2>
           {timetable.length === 0 ? (
             <div style={styles.emptyState}>
-              <p style={{fontSize: '18px', color: '#64748b', margin: 0}}>
+              <p style={{ fontSize: '18px', color: '#64748b', margin: 0 }}>
                 No timetable has been generated yet. Add your levels, rooms, and courses in Asset Management first.
               </p>
             </div>
@@ -352,7 +352,7 @@ function App() {
                       }}>
                         <td style={styles.td}><strong>{slot.day}</strong></td>
                         <td style={styles.td}>{slot.time_slot}</td>
-                        <td style={{...styles.td, fontWeight: 'bold', color: '#2563eb'}}>{slot.course_code}</td>
+                        <td style={{ ...styles.td, fontWeight: 'bold', color: '#2563eb' }}>{slot.course_code}</td>
                         <td style={styles.td}><span style={styles.levelBadge}>{slot.level}</span></td>
                         <td style={styles.td}>{slot.lecturer_name}</td>
                         <td style={styles.td}><span style={styles.roomBadge}>{slot.room_name}</span></td>
@@ -368,10 +368,10 @@ function App() {
 
       {activeTab === "manage" && (
         <div style={styles.formsGrid}>
-          
+
           <div style={styles.card}>
             <h3 style={styles.cardTitle}>🎓 Academic Levels & Quotas</h3>
-            <form onSubmit={handleAddLevel} style={{marginBottom: '20px'}}>
+            <form onSubmit={handleAddLevel} style={{ marginBottom: '20px' }}>
               <label style={styles.label}>Level Name</label>
               <input type="text" placeholder="e.g. 100L" value={lvlName} onChange={e => setLvlName(e.target.value)} required style={styles.input} />
               <label style={styles.label}>Student Quota / Enrolment</label>
@@ -384,23 +384,23 @@ function App() {
               {levels.length === 0 ? <p style={styles.emptyText}>No levels found.</p> : levels.map(lvl => (
                 <div key={lvl.id} style={styles.listItem}>
                   <div>
-                    <strong>{lvl.name}</strong> — 
+                    <strong>{lvl.name}</strong> —
                     {editingLevelId === lvl.id ? (
-                      <span style={{marginLeft: '6px'}}>
-                        <input 
-                          type="number" 
-                          style={styles.smallInput} 
-                          value={editQuotaValue} 
-                          onChange={e => setEditQuotaValue(e.target.value)} 
+                      <span style={{ marginLeft: '6px' }}>
+                        <input
+                          type="number"
+                          style={styles.smallInput}
+                          value={editQuotaValue}
+                          onChange={e => setEditQuotaValue(e.target.value)}
                         />
                         <button onClick={() => handleUpdateLevelQuota(lvl.id)} style={styles.saveInlineBtn}>Save</button>
                         <button onClick={() => setEditingLevelId(null)} style={styles.cancelInlineBtn}>✕</button>
                       </span>
                     ) : (
-                      <span style={{fontSize: '12px', color: '#64748b', marginLeft: '6px'}}>
+                      <span style={{ fontSize: '12px', color: '#64748b', marginLeft: '6px' }}>
                         ({lvl.enrolment} students)
-                        <button 
-                          onClick={() => { setEditingLevelId(lvl.id); setEditQuotaValue(lvl.enrolment); }} 
+                        <button
+                          onClick={() => { setEditingLevelId(lvl.id); setEditQuotaValue(lvl.enrolment); }}
                           style={styles.editBtn}
                         >
                           ✏️ Edit
@@ -416,38 +416,38 @@ function App() {
 
           <div style={styles.card}>
             <h3 style={styles.cardTitle}>👨‍🏫 Lecturers & Preferences</h3>
-            <form onSubmit={handleAddLecturer} style={{marginBottom: '20px'}}>
+            <form onSubmit={handleAddLecturer} style={{ marginBottom: '20px' }}>
               <label style={styles.label}>Full Name</label>
               <input type="text" placeholder="e.g. Dr. Alao" value={lecName} onChange={e => setLecName(e.target.value)} required style={styles.input} />
-              
+
               <label style={styles.label}>Preferred Days</label>
               <div style={styles.checkboxGroup}>
                 <label style={styles.checkboxLabel}>
-                  <input 
-                    type="checkbox" 
-                    checked={selectedDays.includes("Any Day")} 
-                    onChange={() => handleDayCheckboxChange("Any Day")} 
+                  <input
+                    type="checkbox"
+                    checked={selectedDays.includes("Any Day")}
+                    onChange={() => handleDayCheckboxChange("Any Day")}
                   /> Any Day
                 </label>
                 {availableDays.map(day => (
                   <label key={day} style={styles.checkboxLabel}>
-                    <input 
-                      type="checkbox" 
-                      checked={selectedDays.includes(day)} 
-                      onChange={() => handleDayCheckboxChange(day)} 
+                    <input
+                      type="checkbox"
+                      checked={selectedDays.includes(day)}
+                      onChange={() => handleDayCheckboxChange(day)}
                     /> {day}
                   </label>
                 ))}
               </div>
 
-              <label style={{...styles.label, color: '#dc2626'}}>🚫 Completely Unavailable Days</label>
-              <div style={{...styles.checkboxGroup, backgroundColor: '#fef2f2', borderColor: '#fecaca'}}>
+              <label style={{ ...styles.label, color: '#dc2626' }}>🚫 Completely Unavailable Days</label>
+              <div style={{ ...styles.checkboxGroup, backgroundColor: '#fef2f2', borderColor: '#fecaca' }}>
                 {availableDays.map(day => (
                   <label key={day} style={styles.checkboxLabel}>
-                    <input 
-                      type="checkbox" 
-                      checked={unavailDays.includes(day)} 
-                      onChange={() => handleUnavailDayCheckboxChange(day)} 
+                    <input
+                      type="checkbox"
+                      checked={unavailDays.includes(day)}
+                      onChange={() => handleUnavailDayCheckboxChange(day)}
                     /> {day}
                   </label>
                 ))}
@@ -464,18 +464,18 @@ function App() {
 
               <button type="submit" style={styles.submitBtn}>+ Save Lecturer</button>
             </form>
-            
+
             <h4 style={styles.subTitle}>Active Lecturers ({lecturers.length})</h4>
             <div style={styles.listContainer}>
               {lecturers.length === 0 ? <p style={styles.emptyText}>No lecturers found.</p> : lecturers.map(l => (
                 <div key={l.id} style={styles.listItem}>
-                  <div style={{textAlign: 'left'}}>
+                  <div style={{ textAlign: 'left' }}>
                     <strong>{l.name}</strong>
-                    <div style={{fontSize: '11px', color: '#64748b', marginTop: '2px'}}>
+                    <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
                       Pref: {l.preferred_day || 'Any Day'} | {l.preferred_slot || 'Any'}
                     </div>
                     {l.unavailable_days && (
-                      <div style={{fontSize: '11px', color: '#dc2626', fontWeight: 'bold', marginTop: '2px'}}>
+                      <div style={{ fontSize: '11px', color: '#dc2626', fontWeight: 'bold', marginTop: '2px' }}>
                         Off: {l.unavailable_days}
                       </div>
                     )}
@@ -488,7 +488,7 @@ function App() {
 
           <div style={styles.card}>
             <h3 style={styles.cardTitle}>🏫 Halls & Rooms</h3>
-            <form onSubmit={handleAddRoom} style={{marginBottom: '20px'}}>
+            <form onSubmit={handleAddRoom} style={{ marginBottom: '20px' }}>
               <label style={styles.label}>Room Name</label>
               <input type="text" placeholder="e.g. Lab 102" value={roomName} onChange={e => setRoomName(e.target.value)} required style={styles.input} />
               <label style={styles.label}>Seating Capacity</label>
@@ -500,7 +500,7 @@ function App() {
             <div style={styles.listContainer}>
               {rooms.length === 0 ? <p style={styles.emptyText}>No rooms found.</p> : rooms.map(r => (
                 <div key={r.id} style={styles.listItem}>
-                  <div style={{textAlign: 'left'}}><strong>{r.name}</strong> <span style={{fontSize: '12px', color: '#64748b'}}>({r.capacity} seats)</span></div>
+                  <div style={{ textAlign: 'left' }}><strong>{r.name}</strong> <span style={{ fontSize: '12px', color: '#64748b' }}>({r.capacity} seats)</span></div>
                   <button onClick={() => handleDeleteRoom(r.id, r.name)} style={styles.deleteBtn}>🗑️ Delete</button>
                 </div>
               ))}
@@ -509,13 +509,13 @@ function App() {
 
           <div style={styles.cardFull}>
             <h3 style={styles.cardTitle}>📚 Registered Courses</h3>
-            <form onSubmit={handleAddCourse} style={{marginBottom: '20px'}}>
-              <div style={{display: 'flex', gap: '15px'}}>
-                <div style={{flex: 1}}>
+            <form onSubmit={handleAddCourse} style={{ marginBottom: '20px' }}>
+              <div style={{ display: 'flex', gap: '15px' }}>
+                <div style={{ flex: 1 }}>
                   <label style={styles.label}>Course Code</label>
                   <input type="text" placeholder="e.g. CSC301" value={courseCode} onChange={e => setCourseCode(e.target.value)} required style={styles.input} />
                 </div>
-                <div style={{flex: 1}}>
+                <div style={{ flex: 1 }}>
                   <label style={styles.label}>Academic Level</label>
                   <select value={courseLevel} onChange={e => setCourseLevel(e.target.value)} required style={styles.input}>
                     <option value="">-- Select Level --</option>
@@ -537,9 +537,9 @@ function App() {
             <div style={styles.listContainer}>
               {courses.length === 0 ? <p style={styles.emptyText}>No courses registered.</p> : courses.map(c => (
                 <div key={c.id} style={styles.listItem}>
-                  <div style={{textAlign: 'left'}}>
-                    <strong style={{color: '#2563eb'}}>{c.code}</strong> — {c.title} <span style={styles.levelBadge}>{c.level}</span>
-                    <span style={{fontSize: '12px', color: '#64748b', marginLeft: '10px'}}>Assigned to: {getLecturerName(c.lecturer_id)}</span>
+                  <div style={{ textAlign: 'left' }}>
+                    <strong style={{ color: '#2563eb' }}>{c.code}</strong> — {c.title} <span style={styles.levelBadge}>{c.level}</span>
+                    <span style={{ fontSize: '12px', color: '#64748b', marginLeft: '10px' }}>Assigned to: {getLecturerName(c.lecturer_id)}</span>
                   </div>
                   <button onClick={() => handleDeleteCourse(c.id, c.code)} style={styles.deleteBtn}>🗑️ Delete</button>
                 </div>
@@ -566,7 +566,7 @@ const styles = {
   metricValue: { fontSize: '28px', fontWeight: '800', color: '#0f172a', marginTop: '6px' },
   errorAlert: { backgroundColor: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca', padding: '14px', borderRadius: '8px', marginBottom: '20px', fontWeight: '500' },
   successAlert: { backgroundColor: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', padding: '14px', borderRadius: '8px', marginBottom: '20px', fontWeight: '500' },
-  
+
   // Diagnostic Card Styles
   diagnosticCard: { backgroundColor: '#fef2f2', border: '2px solid #ef4444', padding: '20px', borderRadius: '12px', marginBottom: '25px', boxShadow: '0 2px 8px rgba(239, 68, 68, 0.15)' },
   diagnosticHeader: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' },
